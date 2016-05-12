@@ -4,102 +4,45 @@ var httpHelpers = require('./http-helpers');
 var fs = require('fs');
 // require more modules/folders here!
 
-
 exports.handleRequest = function (req, res) {
 
-  var basePath = archive.paths.siteAssets;
-  var ourDirectory = basePath + decodeURI(req.url);
-  
-  if (decodeURI(req.url) === '/') {
-    ourDirectory = ourDirectory + 'index.html';
-  } 
+  var ourDirectory;
 
   if (req.method === 'GET') {
-    fs.readFile(ourDirectory, function (err, data) {
-      if (err) {
-        console.log('data:', data);
-        //Take a site and write it to our file sites.txt
-        // fs.write('sites.txt', );
+    if (decodeURI(req.url) === '/') {
+      ourDirectory = archive.paths.siteAssets + decodeURI(req.url) + 'index.html';
+    } else {
+      ourDirectory = archive.paths.archivedSites + decodeURI(req.url);
+    }
 
+    fs.readFile(ourDirectory, 'utf8', function (err, data) {
+      if (err) {
         res.writeHead(404);
-        res.end(JSON.stringify(err));
+        res.end();
         return;
+      } else {
+        res.writeHead(200);
+        res.end(data.toString());
       }
-      res.writeHead(200);
-      res.end(data);
     });
   }
 
   if (req.method === 'POST') {
+    
+    var jsonString = '';
 
-    res.end(archive.paths.list);
+    req.on('data', function (data) {
+      jsonString += data;
+      var startSlice = (jsonString.indexOf('=') + 1);
+      jsonString = jsonString.slice(startSlice) + '\n';
+    });
+
+    req.on('end', function () {
+      archive.addUrlToList(jsonString, function() {
+        res.writeHead(302);
+        res.end();
+      });
+
+    });
   }
-
 };
-
-
-
-
-
-
-
-
-
-
-
-  //   httpHelpers.serveAssets(res, ourAsset, function(data) {  
-  //     res.writeHead(200, {'Content-Type': 'text/html'});
-  //     console.log(data);
-  //     res.end(data);
-  //   });
-  // }
-
-
-
-
-   // console.log('REQUEST URL **********', path.basename(decodeURI(req.url)));
-    // var lookup = path.basename(decodeURI(req.url)) || 'index.html';
-    // var f = './public/' + lookup;
-    // fs.exists(f, function (exists) { 
-    //   console.log(exists ? lookup + " is there" 
-    //   : lookup + " doesn't exist");
-    // });
-
-
-    // httpHelpers.serveAssets(res, asset, callback);
-
-
-
-  // var basePath = 'public/';
-  // var url = decodeURI(req.url);
-  // var filename = path.join(process.cwd(), url);
-
-
-
-  // if (req.method === 'GET') {
-
-  //   httpHelpers.serveAssets(res, asset, function() {
-  //     res.end();
-  //   });
-  // }
-  // // res.writeHead(404); //no such file found!
-
-  // // res.end();
-
-
-
-
-// var requestTypes = {
-//   'GET': function() {},
-//   'POST': function() {},
-//   'OPTIONS':  
-// }
-
-// var mimeTypes = {
-//   '.js': 'text/javascript',
-//   '.html': 'text/html',
-//   '.css': 'text/css'
-// };
-
-
-// var statusCode = 200;

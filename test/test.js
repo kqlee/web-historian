@@ -9,15 +9,13 @@ var initialize = require('../web/initialize.js');
 initialize(path.join(__dirname, '/testdata'));
 
 archive.initialize({
-  //Stores the websites
   archivedSites: path.join(__dirname, '/testdata/sites'),
-  //Stores the names of the websites
   list: path.join(__dirname, '/testdata/sites.txt')
 });
 
 var request = supertest.agent(server);
 
-xdescribe('server', function() {
+describe('server', function() {
   describe('GET /', function () {
     it('should return the content of index.html', function (done) {
       // just assume that if it contains an <input> tag its index.html
@@ -27,7 +25,7 @@ xdescribe('server', function() {
     });
   });
 
-  xdescribe('archived websites', function () {
+  describe('archived websites', function () {
     describe('GET', function () {
       it('should return the content of a website from the archive', function (done) {
         var fixtureName = 'www.google.com';
@@ -54,7 +52,7 @@ xdescribe('server', function() {
       });
     });
 
-    xdescribe('POST', function () {
+    describe('POST', function () {
       it('should append submitted sites to \'sites.txt\'', function(done) {
         var url = 'www.example.com';
 
