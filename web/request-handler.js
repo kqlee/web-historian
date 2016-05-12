@@ -5,44 +5,48 @@ var fs = require('fs');
 // require more modules/folders here!
 
 
-// var requestTypes = {
-//   'GET': function() {},
-//   'POST': function() {},
-//   'OPTIONS':  
-// }
+exports.handleRequest = function (req, res) {
 
-var mimeTypes = {
-  '.js': 'text/javascript',
-  '.html': 'text/html',
-  '.css': 'text/css'
+  var basePath = __dirname + '/public/';
+  var ourDirectory = basePath + decodeURI(req.url);
+  
+  if (decodeURI(req.url) === '/') {
+    ourDirectory = basePath + 'index.html';
+  } 
+
+  if (req.method === 'GET') {
+    console.log(ourDirectory);
+    fs.readFile(ourDirectory, function (err, data) {
+      if (err) {
+        res.writeHead(404);
+        res.end(JSON.stringify(err));
+        return;
+      }
+      res.writeHead(200);
+      res.end(data);
+    });
+  }
+
 };
 
 
-// var statusCode = 200;
-
-// exports.handleRequest = function (req, res) {
-
-//   var basePath = 'public/'
-//   var ourAsset = basePath + decodeURI(req.url);
-  
-//   if(decodeURI(req.url) === '/') {
-//     ourAsset = basePath + 'index.html';
-//   } else {
-
-//   }
 
 
 
-//   if (req.method === 'GET') {
-
-//     httpHelpers.serveAssets(res, ourAsset, function(data) {  
-//       res.writeHead(200, {'Content-Type': 'text/html'});
-//       console.log(data);
-//       res.end(data);
-//     });
 
 
-// };
+
+
+
+
+  //   httpHelpers.serveAssets(res, ourAsset, function(data) {  
+  //     res.writeHead(200, {'Content-Type': 'text/html'});
+  //     console.log(data);
+  //     res.end(data);
+  //   });
+  // }
+
+
 
 
    // console.log('REQUEST URL **********', path.basename(decodeURI(req.url)));
@@ -73,3 +77,21 @@ var mimeTypes = {
   // // res.writeHead(404); //no such file found!
   // // res.end(archive.paths.list);
   // // res.end();
+
+
+
+
+// var requestTypes = {
+//   'GET': function() {},
+//   'POST': function() {},
+//   'OPTIONS':  
+// }
+
+// var mimeTypes = {
+//   '.js': 'text/javascript',
+//   '.html': 'text/html',
+//   '.css': 'text/css'
+// };
+
+
+// var statusCode = 200;
