@@ -7,17 +7,20 @@ var fs = require('fs');
 
 exports.handleRequest = function (req, res) {
 
-  var basePath = __dirname + '/public/';
+  var basePath = archive.paths.siteAssets;
   var ourDirectory = basePath + decodeURI(req.url);
   
   if (decodeURI(req.url) === '/') {
-    ourDirectory = basePath + 'index.html';
+    ourDirectory = ourDirectory + 'index.html';
   } 
 
   if (req.method === 'GET') {
-    console.log(ourDirectory);
     fs.readFile(ourDirectory, function (err, data) {
       if (err) {
+        console.log('data:', data);
+        //Take a site and write it to our file sites.txt
+        // fs.write('sites.txt', );
+
         res.writeHead(404);
         res.end(JSON.stringify(err));
         return;
@@ -25,6 +28,11 @@ exports.handleRequest = function (req, res) {
       res.writeHead(200);
       res.end(data);
     });
+  }
+
+  if (req.method === 'POST') {
+
+    res.end(archive.paths.list);
   }
 
 };
@@ -75,7 +83,7 @@ exports.handleRequest = function (req, res) {
   //   });
   // }
   // // res.writeHead(404); //no such file found!
-  // // res.end(archive.paths.list);
+
   // // res.end();
 
 
